@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Book">
+	
+	<sql id="bookSearch">
+		<if test="searchType != null and searchType == 'title'">
+			AND (TITLE LIKE '%'||#{searchWord}||'%')
+		</if>
+		<if test="searchType != null and searchType == 'category'">
+			AND (CATEGORY LIKE '%'||#{searchWord}||'%')
+		</if>
+	</sql>
+	
+	<select id="selectBookList" parameterType="hashMap" resultType="hashMap">
+		SELECT 
+			BOOK_ID, TITLE, CATEGORY, PRICE, INSERT_DATE
+		FROM BOOK
+		WHERE 1=1
+	</select>
+	
+	<select id="selectBook" parameterType="hashMap" resultType="hashMap">
+		SELECT 
+			BOOK_ID, TITLE, CATEGORY, PRICE, INSERT_DATE
+		FROM BOOK
+		WHERE BOOK_ID = #{bookId}
+	</select>
+	
+	<insert id="insertBook" parameterType="hashMap">
+		<selectKey keyProperty="book_id" resultType="int" order="BEFORE">
+			SELECT seq_book1.NEXTVAL FROM DUAL		
+		</selectKey>
+		INSERT INTO BOOK(
+			BOOK_ID, TITLE, CATEGORY, PRICE
+		)VALUES(
+			#{book_id}, #{title}, #{category}, #{price}
+		)
+	</insert>
+	
+	<delete id="deleteBook" parameterType="hashMap">
+		DELETE FROM BOOK
+		WHERE BOOK_ID = #{bookId}
+	</delete>
+	
+	<update id="updateBook" parameterType="hashMap">
+		UPDATE BOOK
+		SET
+			TITLE = #{title},
+			CATEGORY = #{category},
+			PRICE = #{price}
+		WHERE BOOK_ID = #{bookId}
+	</update>
+	
+	<select id="selectBookCount" parameterType="paginationInfoVO" resultType="int">
+		SELECT COUNT(BOOK_ID) 
+		FROM BOOK 
+		WHERE 1=1
+		<include refid="bookSearch"/>
+	</select>
+	
+	<!-- 
+		OVER()는 GROUP BY나 서브쿼리를 사용하지 않고 분석함수(SUM, MAX, COUNT)와 집계 함수(GROUP BY, ORDER BY)를 사용할 수 있다.
+	 -->
+	<select id="selectBookList2" parameterType="paginationInfoVO" resultType="bookVO">
+		SELECT
+			B.*
+		FROM (
+			SELECT
+				A.*, ROW_NUMBER() OVER (ORDER BY A.BOOK_ID DESC) RNUM
+			FROM (
+				SELECT 
+					BOOK_ID, TITLE, CATEGORY, PRICE, 
+					TO_DATE(INSERT_DATE, 'yy-mm-dd hh24:mi:ss') INSERT_DATE
+				FROM BOOK 
+				WHERE 1=1
+				<include refid="bookSearch"/>
+				ORDER BY BOOK_ID DESC
+			) A 
+		) B
+		<![CDATA[
+			WHERE B.RNUM >= #{startRow} AND B.RNUM <= #{endRow}
+		]]>
+	</select>
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
