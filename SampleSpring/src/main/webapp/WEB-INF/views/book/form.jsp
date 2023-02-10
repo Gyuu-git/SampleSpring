@@ -9,7 +9,7 @@
 <body>
 	<h3>책 등록</h3>
 	<hr/>
-	<form action="" method="post">
+	<form action="" method="post" enctype="multipart/form-data">                                       
 		<table>
 			<tr>
 				<td>제목</td>
@@ -27,6 +27,12 @@
 				<td>가격</td>
 				<td>
 					<input type="text" name="price" id="price"/>
+				</td>
+			</tr>
+			<tr>
+				<td>파일</td>
+				<td>
+					<input type="file" name="bookFile" multiple="multiple" />
 				</td>
 			</tr>
 		</table>
