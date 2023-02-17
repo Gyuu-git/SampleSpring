@@ -38,7 +38,7 @@
 					<tr>
 						<td>${book.bookId }</td>
 						<td>
-							<a href="/book/detail.do?bookId=${book.bookId}">
+							<a href="/book/detail2.do?bookId=${book.bookId}">
 								${book.title }
 							</a>
 						</td>
@@ -69,3 +69,15 @@ $(function(){
 });
 </script>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+

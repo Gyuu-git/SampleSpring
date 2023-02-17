@@ -81,6 +81,61 @@
 			WHERE B.RNUM >= #{startRow} AND B.RNUM <= #{endRow}
 		]]>
 	</select>
+	
+	<insert id="insertBookByFile" parameterType="bookVO">
+		<selectKey keyProperty="bookId" resultType="int" order="BEFORE">
+			SELECT seq_book.NEXTVAL FROM DUAL		
+		</selectKey>
+		INSERT INTO BOOK(
+			BOOK_ID, TITLE, CATEGORY, PRICE
+		)VALUES(
+			#{bookId}, #{title}, #{category}, #{price}
+		)
+	</insert>
+	
+	
+	<insert id="insertBookFile" parameterType="bookFileVO">
+		INSERT INTO BOOKFILE(
+			FILE_NO, BOOK_ID, FILE_NAME, FILE_SIZE, 
+			FILE_FANCYSIZE, FILE_MIME, FILE_SAVEPATH, FILE_DOWNCOUNT
+		) VALUES(
+			SEQ_BOOKFILE.NEXTVAL, #{bookId}, #{fileName}, #{fileSize}, 
+			#{fileFancysize}, #{fileMime}, #{fileSavepath}, 0
+		)
+		
+	</insert>
+	
+	<resultMap type="bookVO" id="bookMap">
+		<id property="bookId" column="BOOK_ID"/>
+		<result property="bookId" column="BOOK_ID"/>
+		<result property="title" column="TITLE"/>
+		<result property="category" column="CATEGORY"/>
+		<result property="price" column="PRICE"/>
+		<result property="insertDate" column="INSERT_DATE"/>
+		<collection property="bookFileList" resultMap="bookFileMap"/>
+	</resultMap>
+	
+	<resultMap type="bookFileVO" id="bookFileMap">
+		<id property="fileNo" column="FILE_NO"/>
+		<result property="fileNo" column="FILE_NO"/>
+		<result property="fileName" column="FILE_NAME"/>
+		<result property="fileSize" column="FILE_SIZE"/>
+		<result property="fileFancysize" column="FILE_FANCYSIZE"/>
+		<result property="fileMime" column="FILE_MIME"/>
+		<result property="fileSavepath" column="FILE_SAVEPATH"/>
+		<result property="fileDowncount" column="FILE_DOWNCOUNT"/>
+	</resultMap>
+	
+	<select id="selectBook2" parameterType="int" resultMap="bookMap">
+		SELECT
+			B.BOOK_ID, TITLE, CATEGORY, PRICE, 
+			TO_CHAR(INSERT_DATE, 'yy-mm-dd hh24:mi:ss') INSERT_DATE,
+			FILE_NO, FILE_NAME, FILE_SIZE, FILE_FANCYSIZE, FILE_MIME, FILE_SAVEPATH,
+			FILE_DOWNCOUNT
+		FROM BOOK B LEFT OUTER JOIN BOOKFILE BF ON(B.BOOK_ID = BF.BOOK_ID)
+		WHERE B.BOOK_ID = #{bookId}
+	</select>
+	
 </mapper>
 
 

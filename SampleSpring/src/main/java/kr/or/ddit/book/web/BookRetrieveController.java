@@ -28,7 +28,7 @@ public class BookRetrieveController {
 	public String list(@RequestParam Map<String, Object> map, Model model) {
 		List<Map<String, Object>> list = bookService.selectBookList(map);
 		model.addAttribute("list", list);
-		return "book/list";
+		return "book/list2";
 	}
 	
 	@RequestMapping(value="/detail.do", method = RequestMethod.GET)
@@ -68,5 +68,13 @@ public class BookRetrieveController {
 		
 		model.addAttribute("pagingVO", pagingVO);
 		return "book/list2";
+	}	
+	
+	@RequestMapping(value="/detail2.do", method = RequestMethod.GET)
+	public String detail2(@RequestParam int bookId, Model model) {
+		BookVO bookVO = bookService.selectBook2(bookId);
+		model.addAttribute("book", bookVO);
+		System.out.println(bookVO.toString());
+		return "book/detail2";
 	}
 }

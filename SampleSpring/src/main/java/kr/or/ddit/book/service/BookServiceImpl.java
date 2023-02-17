@@ -64,8 +64,7 @@ public class BookServiceImpl implements IBookService {
 	public ServiceResult insertBookByFile(BookVO bookVO, HttpServletRequest request) {
 		ServiceResult result = null;
 		
-//		int status = bookDAO.insertBookByFile(bookVO);
-		int status = 1;
+		int status = bookDAO.insertBookByFile(bookVO);
 		if(status > 0) {
 			List<BookFileVO> bookFileList = bookVO.getBookFileList();
 			try {
@@ -98,12 +97,17 @@ public class BookServiceImpl implements IBookService {
 				File saveFile = new File(saveLocate);
 				bookFileVO.setBookId(bookId);
 				bookFileVO.setFileSavepath(saveLocate);
-//				bookDAO.insertBookFile(bookFileVO);
+				bookDAO.insertBookFile(bookFileVO);
 				InputStream is = bookFileVO.getItem().getInputStream();
 				FileUtils.copyInputStreamToFile(is, saveFile);
 				is.close();
 			}
 		}
+	}
+
+	@Override
+	public BookVO selectBook2(int bookId) {
+		return bookDAO.selectBook2(bookId);
 	}
 
 }

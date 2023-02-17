@@ -26,7 +26,7 @@ public class BookModifyController {
 		
 		int status_code = bookService.deleteBook(map);
 		if(status_code > 0) {		// 삭제 성공
-			goPage = "redirect:/book/list.do";
+			goPage = "redirect:/book/list2.do";
 		}else {						// 삭제 실패
 			goPage = "redirect:/book/detail.do?bookId="+map.get("bookId").toString();
 		}

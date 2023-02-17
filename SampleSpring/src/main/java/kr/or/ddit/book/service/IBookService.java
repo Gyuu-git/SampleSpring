@@ -23,4 +23,5 @@ public interface IBookService {
 	
 	
 	public ServiceResult insertBookByFile(BookVO bookVO, HttpServletRequest request);
+	public BookVO selectBook2(int bookId);
 }
